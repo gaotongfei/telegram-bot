@@ -1,26 +1,46 @@
+from main import getUpdates, google_api, sendMessage
+import json
+import collections
+import re
 import requests
-import os
 
-tg_bot_token = os.environ.get('tg_bot_token')
-url_prefix = 'https://api.telegram.org/bot' + tg_bot_token + '/'
+update_id_deque = collections.deque(maxlen=2)
+chat_id = 0
 
-def getMe():
-    url = url_prefix + 'getMe'
-    r = requests.get(url)
-    print(r.status_code)
-    print(r.text)
+def main():
+    updates = getUpdates()
+    rs = updates["result"]
+    global update_id_deque
+    update_id_deque.append(rs[-1]['update_id'])
 
-def sendMessage(chat_id, text):
-    url = url_prefix + 'sendMessage?chat_id={0}&text={1}'.format(chat_id, text)
-    r = requests.get(url)
-    return r.json()
+    if len(update_id_deque) == 1:
+        print("len is 1")
+        pass
+    if len(update_id_deque) == 2:
+        print("len is 2")
+        delta = update_id_deque[1] - update_id_deque[0]
+        if delta != 0:
+            print("delta is not 0")
+            for _ in rs[-delta:]:
+                print(_['message']['chat']['id'])
+                message_text = _['message']['text']
+                if message_text.startswith('/g'):
+                    global chat_id
+                    chat_id = _['message']['chat']['id']
+                    google(message_text[3:])
+    #return json.dumps(updates)
 
-def getUpdates():
-    url = url_prefix + 'getUpdates'
-    r = requests.get(url)
-    return r.json()
+def google(message):
+    google_rs_message = ''
+    rs = google_api(message)['responseData']['results']
+    for _ in rs:
+        google_rs_message += "url:{} \ntitle:{} \ncontent:{}".format(_['url'], _['title'], _['content'])
+        #chat_id = '98496186'
+        print(chat_id)
+        sendMessage(chat_id, google_rs_message)
+    #r = requests.get('http://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=' + message)
+    return json.dumps(google_api_json)
 
-def google_api(message):
-    url = 'http://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=' + message
-    r = requests.get(url)
-    return r.json()
+main()
+#google('flask')
+
