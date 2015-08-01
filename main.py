@@ -1,7 +1,7 @@
-from main import getUpdates, google_api, sendMessage
+from helper import getUpdates, google_api, sendMessage
 import json
 import collections
-import re
+import time
 import requests
 
 update_id_deque = collections.deque(maxlen=2)
@@ -22,25 +22,24 @@ def main():
         if delta != 0:
             print("delta is not 0")
             for _ in rs[-delta:]:
-                print(_['message']['chat']['id'])
                 message_text = _['message']['text']
                 if message_text.startswith('/g'):
                     global chat_id
                     chat_id = _['message']['chat']['id']
                     google(message_text[3:])
-    #return json.dumps(updates)
+                    update_id_deque.append(rs[-1]['update_id'])
+                    #print("1 ", update_id_deque[0],"2 ", update_id_deque[1])
 
 def google(message):
     google_rs_message = ''
     rs = google_api(message)['responseData']['results']
-    for _ in rs:
-        google_rs_message += "url:{} \ntitle:{} \ncontent:{}".format(_['url'], _['title'], _['content'])
+    for _ in rs[:1]:
+        google_rs_message += "{}\n{}".format(_['url'].encode('utf-8'), _['content'].encode('utf-8'))
         #chat_id = '98496186'
-        print(chat_id)
         sendMessage(chat_id, google_rs_message)
-    #r = requests.get('http://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=' + message)
-    return json.dumps(google_api_json)
 
-main()
-#google('flask')
+while True:
+    main()
+    print("updating")
+    time.sleep(1)
 
