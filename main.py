@@ -36,7 +36,7 @@ def google(message):
     for _ in rs[:1]:
         google_rs_message += "{}\n{}".format(_['url'].encode('utf-8'), _['content'].encode('utf-8'))
         #chat_id = '98496186'
-        sendMessage(chat_id, google_rs_message)
+        sendMessage(chat_id, str(google_rs_message))
 
 while True:
     main()
