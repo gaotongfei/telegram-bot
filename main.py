@@ -45,7 +45,6 @@ def google(message):
 def translate(message):
     rs = youdao_api(message)
     translate_rs_message = "{}\n{}".format(rs['translation'][0].encode('utf-8'), rs['basic']['explains'][0].encode('utf-8'))
-    chat_id = '98496186'
     sendMessage(chat_id, str(translate_rs_message))
 
 while True:
