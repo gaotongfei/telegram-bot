@@ -1,3 +1,4 @@
+# coding=utf-8
 from helper import getUpdates, google_api, sendMessage, youdao_api
 import json
 import collections
@@ -44,11 +45,22 @@ def google(message):
 
 def translate(message):
     rs = youdao_api(message)
-    if 'basic' in rs:
-        translate_rs_message = "{}\n{}".format(rs['translation'][0].encode('utf-8'), rs['basic']['explains'][0].encode('utf-8'))
-    else:
-        translate_rs_message = "{}".format(rs['translation'][0].encode('utf-8'))
-    sendMessage(chat_id, str(translate_rs_message))
+    if rs['errorCode'] == 0:
+        if 'basic' in rs:
+            translate_rs_message = "{}\n{}".format(rs['translation'][0].encode('utf-8'), rs['basic']['explains'][0].encode('utf-8'))
+        else:
+            translate_rs_message = "{}".format(rs['translation'][0].encode('utf-8'))
+        sendMessage(chat_id, str(translate_rs_message))
+    elif rs['errorCode'] == 20:
+        sendMessage(chat_id, u"要翻译的文本过长")
+    elif rs['errorCode'] == 30:
+        sendMessage(chat_id, u"无法进行有效的翻译")
+    elif rs['errorCode'] == 40:
+        sendMessage(chat_id, u"不支持的语言类型")
+    elif rs['errorCode'] == 50:
+        sendMessage(chat_id, u"无效的key")
+    elif rs['errorCode'] == 60:
+        sendMessage(chat_id, u"无词典结果，仅在获取词典结果生效")
 
 while True:
     main()
