@@ -2,6 +2,9 @@ import requests
 import os
 
 tg_bot_token = os.environ.get('tg_bot_token')
+youdao_keyfrom = os.environ.get('youdao_keyfrom')
+youdao_key = os.environ.get('youdao_key')
+
 url_prefix = 'https://api.telegram.org/bot' + tg_bot_token + '/'
 
 def getMe():
@@ -22,5 +25,10 @@ def getUpdates():
 
 def google_api(message):
     url = 'http://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=' + message
+    r = requests.get(url)
+    return r.json()
+
+def youdao_api(message):
+    url = 'http://fanyi.youdao.com/openapi.do?keyfrom={}&key={}&type=data&doctype=json&version=1.1&q={}'.format(youdao_keyfrom, youdao_key, message)
     r = requests.get(url)
     return r.json()

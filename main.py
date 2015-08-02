@@ -1,4 +1,4 @@
-from helper import getUpdates, google_api, sendMessage
+from helper import getUpdates, google_api, sendMessage, youdao_api
 import json
 import collections
 import time
@@ -29,6 +29,10 @@ def main():
                     google(message_text[3:])
                     update_id_deque.append(rs[-1]['update_id'])
                     #print("1 ", update_id_deque[0],"2 ", update_id_deque[1])
+                elif message_text.startswith('/trans'):
+                    chat_id = _['message']['chat']['id']
+                    translate(message_text[7:])
+                    update_id_deque.append(rs[-1]['update_id'])
 
 def google(message):
     google_rs_message = ''
@@ -38,8 +42,13 @@ def google(message):
         #chat_id = '98496186'
         sendMessage(chat_id, str(google_rs_message))
 
+def translate(message):
+    rs = youdao_api(message)
+    translate_rs_message = "{}\n{}".format(rs['translation'][0].encode('utf-8'), rs['basic']['explains'][0].encode('utf-8'))
+    chat_id = '98496186'
+    sendMessage(chat_id, str(translate_rs_message))
+
 while True:
     main()
     print("updating")
-    time.sleep(1)
-
+    time.sleep(0.5)
