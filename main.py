@@ -44,7 +44,10 @@ def google(message):
 
 def translate(message):
     rs = youdao_api(message)
-    translate_rs_message = "{}\n{}".format(rs['translation'][0].encode('utf-8'), rs['basic']['explains'][0].encode('utf-8'))
+    if 'basic' in rs:
+        translate_rs_message = "{}\n{}".format(rs['translation'][0].encode('utf-8'), rs['basic']['explains'][0].encode('utf-8'))
+    else:
+        translate_rs_message = "{}".format(rs['translation'][0].encode('utf-8'))
     sendMessage(chat_id, str(translate_rs_message))
 
 while True:
