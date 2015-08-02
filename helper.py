@@ -29,6 +29,6 @@ def google_api(message):
     return r.json()
 
 def youdao_api(message):
-    url = 'http://fanyi.youdao.com/openapi.do?keyfrom={}&key={}&type=data&doctype=json&version=1.1&q={}'.format(youdao_keyfrom, youdao_key, message)
+    url = 'http://fanyi.youdao.com/openapi.do?keyfrom={}&key={}&type=data&doctype=json&version=1.1&q={}'.format(youdao_keyfrom, youdao_key, message.encode('utf-8'))
     r = requests.get(url)
     return r.json()
