@@ -43,7 +43,8 @@ def youdao_api(message):
 
 def nasa_api(message):
     if message is None:
-        url = 'https://api.nasa.gov/planetary/apod?concept_tags=True&api_key={}'.format(nasa_api_key)
+        url = 'https://api.nasa.gov/planetary/apod?concept_tags=True&api_key={}'\
+              .format(nasa_api_key)
     else:
         url = 'https://api.nasa.gov/planetary/apod?concept_tags=True&api_key={}&date={}'\
               .format(nasa_api_key, message)

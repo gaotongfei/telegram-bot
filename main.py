@@ -90,4 +90,4 @@ def nasa_pic(message):
 while True:
     main()
     print("updating")
-    time.sleep(0.5)
+    time.sleep(2)
